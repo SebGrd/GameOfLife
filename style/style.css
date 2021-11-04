@@ -1,0 +1,12 @@
+.game {
+  display: flex;
+  flex-wrap: wrap;
+  width: 50vw;
+  height: 50vw;
+  box-sizing: border-box;
+}
+.game__cell {
+  box-shadow: 0 0 0 1px #cccccc;
+}
+
+/*# sourceMappingURL=style.css.map */
