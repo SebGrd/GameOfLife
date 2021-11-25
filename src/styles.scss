@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+body{
+  //background: #28282d;
+}
+
+.game {
+  display: flex;
+  flex-wrap: wrap;
+  width: 60vw;
+  height: 60vw;
+  border: 2px solid mediumpurple;
+  &__cell {
+    background: #f4f4fd;
+    border: 1px solid white;
+    color: gray;
+    font-size: .6rem;
+    transition: background 75ms ease-in-out;
+  }
+}
+
+.alive{
+  background: rebeccapurple;
+}

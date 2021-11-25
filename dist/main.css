@@ -1,0 +1,22 @@
+/*!**********************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/styles.scss ***!
+  \**********************************************************************************************************/
+* {
+  box-sizing: border-box; }
+
+.game {
+  display: flex;
+  flex-wrap: wrap;
+  width: 60vw;
+  height: 60vw;
+  border: 2px solid mediumpurple; }
+  .game__cell {
+    background: #f4f4fd;
+    border: 1px solid white;
+    color: gray;
+    font-size: .6rem;
+    transition: background 75ms ease-in-out; }
+
+.alive {
+  background: rebeccapurple; }
+
