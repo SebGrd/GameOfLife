@@ -16,20 +16,11 @@ class GameOfLife {
     private readonly gridSize: number;
     private cells: Array<HTMLElement> = [];
     private readonly element: HTMLElement;
-    private _snapshot: Array<{ coords: Coordinates; alive: boolean; }> = [];
 
     constructor(gridSize: number, element: HTMLElement) {
         this.gridSize = gridSize;
         this.element = element;
         this.generateGrid();
-    }
-
-    get snapshot(): Array<{ coords: Coordinates; alive: boolean }> {
-        return this._snapshot;
-    }
-
-    set snapshot(value: Array<{ coords: Coordinates; alive: boolean }>) {
-        this._snapshot = value;
     }
 
     private generateGrid(): void {
@@ -53,22 +44,23 @@ class GameOfLife {
         }
     }
 
-    getCellCoords(element: HTMLElement) {
+    // Returns Coordinates from HTMLElement
+    getCellCoords(element: HTMLElement): Coordinates {
         if (element.dataset.coordinates) {
             return JSON.parse(element.dataset.coordinates);
         }
-        return false;
+        return {x: -1, y: -1};
     }
 
+    // Returns HTMLElement from Coordinates
     getCellFromCoords(coords: Coordinates): HTMLElement {
         return this.cells.filter((cell) =>
             util.compareObjects(this.getCellCoords(cell), coords)
         )[0];
     }
 
-    getNeighboursCoords(coord: Coordinates): Array<Coordinates> {
-        // 3, 2 => 2,1 / 3,1 / 4,1 // 2,2 / 4, 2 // 2,3 / 3,3 / 4,4
-        const {x, y} = coord;
+    getNeighboursCoords(coords: Coordinates): Array<Coordinates> {
+        const {x, y} = coords;
         return [
             {x: x - 1, y: y - 1},
             {x: x, y: y - 1},
@@ -81,19 +73,19 @@ class GameOfLife {
         ];
     }
 
+    // Alive cells are common cells but with the "alive" class
     setCellAlive(coords: Coordinates): void {
         const el: HTMLElement = this.getCellFromCoords(coords);
         el.classList.add('alive')
     }
 
+    // Dead cells are common cells with no special classes or attribute
     setCellDead(coords: Coordinates): void {
         const el: HTMLElement = this.getCellFromCoords(coords);
         el.classList.remove('alive')
     }
 
-    /*
-    @return boolean true = alive | false = dead
-     */
+    // Returns true if the cell is alive
     getCellState(coords: Coordinates): boolean {
         const el = this.getCellFromCoords(coords);
         if (el?.classList) {
@@ -102,9 +94,7 @@ class GameOfLife {
         return false;
     }
 
-    /*
-    @return number 0 = do nothing | 1 = new born | 2 = kill it
-     */
+    // Predict if the cell will be dead or alive depending on its neighbors
     cellFutureState(coords: Coordinates): Action {
         const neighbors = this.getNeighboursCoords(coords);
         let nbNeighbors = 0;
@@ -117,28 +107,6 @@ class GameOfLife {
         if (nbNeighbors >= 4) return 2; // dies by overpopulation
         if (nbNeighbors === 3) return 1; // new born
         return 0; // stay alive
-    }
-
-    makeSnapshot(): void {
-        this.snapshot = this.cells.map((cell) => Object.create({
-            coords: this.getCellCoords(cell),
-            alive: this.getCellState(this.getCellCoords(cell)),
-        }))
-    }
-
-    restoreSnapshot(): void {
-        this.snapshot.forEach(({coords, alive}) => {
-            if (alive) {
-                console.log('test')
-                this.setCellAlive(coords);
-            } else {
-                this.setCellDead(coords);
-            }
-        })
-    }
-
-    previousFrame(): void {
-        if (this.snapshot) this.restoreSnapshot();
     }
 
     nextFrame(): void {
@@ -163,7 +131,6 @@ class GameOfLife {
                     this.setCellDead(coords);
             }
         })
-        // this.makeSnapshot();
     }
 }
 
@@ -187,9 +154,6 @@ if (mainElement) {
     // Controls event listeners
     document.getElementById('next-frame')?.addEventListener('click', () => {
         gol.nextFrame();
-    })
-    document.getElementById('previous-frame')?.addEventListener('click', () => {
-        gol.previousFrame();
     })
 }
 
